@@ -1,9 +1,8 @@
 
 
 use std::env;  
-use std::error::Error;
-use std::fs;
 use std::process;
+use mini_grep::Config;
 
 
 fn main() {
@@ -17,37 +16,10 @@ fn main() {
     println!("Searching for {}", config.query);
     println!("In file {}", config.filename);
 
-   if let Err(e) = run(config){
+   if let Err(e) = mini_grep::run(config){
     println!("Application error: {}", e );
     process:: exit(1);
    }
 
 
 }
-
-fn run(config:Config) -> Result<(), Box<dyn Error>>{
- let contents:String = fs::read_to_string(config.filename) ?;
-
-    println!("With Text : \n{}", contents);
-    Ok(())
-}
-
-struct Config {
-    query : String,
-    filename : String
-}
-
-impl Config {
-    fn new(args: &[String]) -> Result<Config, &str>
-{
-    if args.len() <3 {
-        return Err("Not enough arguments");
-    }
-    let query :String = args[1].clone();
-    let filename :String = args[2].clone();
-
-    Ok(Config { query: query, filename: filename })
-}
-}
-
-
